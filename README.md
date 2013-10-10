@@ -32,6 +32,10 @@ Deleting a value:
 
 	(delete "message")
 
+Get the machines in the cluster
+
+	(machines)
+
 ## TODO
 
 - Watching a prefix
