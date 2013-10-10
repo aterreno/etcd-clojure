@@ -1,5 +1,6 @@
-(ns etcd-clojure.core)
-(:require '[clj-http.client :as client])
+(ns etcd-clojure.core
+  (:require [clj-http.client :as client])
+  (:require [cheshire.core :refer :all]))
 
 (def ^:private endpoint (atom "http://127.0.0.1:4001"))
 
@@ -21,12 +22,12 @@
 
 (defn set
   [key value & {:keys [ttl]}]
-  (client/put (build-url :key key :value value :ttl ttl)))
+  (parse-string (:body (client/put (build-url :key key :value value :ttl ttl)))))
 
 (defn get
   [key]
-  (client/get (build-url :key key)))
+  (parse-string (:body (client/get (build-url :key key)))))
 
 (defn delete
   [key]
-  (client/delete (build-url :key key)))
+  (parse-string (:body (client/delete (build-url :key key)))))
