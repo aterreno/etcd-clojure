@@ -14,6 +14,10 @@ Setting a value is supported with optional ttl param:
 
 	(set "message" "somevalue" :ttl 5)
 
+You can also use the atomic test and set by providing the :prev-val param:
+
+	(set "message" "somenewvalue" :prev-val "somevalue")
+
 Getting a value:
 
 	(get "message")
@@ -24,12 +28,11 @@ Deleting a value:
 
 ## TODO
 
+- push to clojars
 - Watching a prefix
-- Atomic test and set
 - Listing a Directory
 - Https
 - Nodes operations
-
 
 ## License
 

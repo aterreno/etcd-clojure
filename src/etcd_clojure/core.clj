@@ -14,15 +14,18 @@
   (reset! endpoint etcd-server-uri))
 
 (defn- build-url
-  [& {:keys [key value ttl]}]
+  [& {:keys [key value ttl prev-val]}]
   (cond-> base-url
           key (str "/keys/" key)
           value (str "?value=" value)
+          prev-val (str "&prevValue=" prev-val)
           ttl (str "&ttl=" ttl)))
 
 (defn set
-  [key value & {:keys [ttl]}]
-  (parse-string (:body (client/put (build-url :key key :value value :ttl ttl)))))
+  [key value & {:keys [ttl prev-val]}]
+  (try (parse-string (:body (client/put (build-url :key key :value value :ttl ttl :prev-val prev-val))))
+       (catch Exception e
+         (parse-string (get-in (.getData e) [:object :body])))))
 
 (defn get
   [key]
