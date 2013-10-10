@@ -22,6 +22,15 @@ Deleting a value:
 
 	(delete "message")
 
+## TODO
+
+- Watching a prefix
+- Atomic test and set
+- Listing a Directory
+- Https
+- Nodes operations
+
+
 ## License
 
 Apache 2.0
