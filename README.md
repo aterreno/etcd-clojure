@@ -15,9 +15,11 @@ Setting a value is supported with optional ttl param:
 	(set "message" "somevalue" :ttl 5)
 
 Getting a value:
+
 	(get "message")
 
 Deleting a value:
+
 	(delete "message")
 
 ## License
