@@ -2,6 +2,9 @@
 
 A Clojure library to interact with an [etcd](https://github.com/coreos/etcd) server .
 
+Why etcd and not Zookeper? Well Zookeeper is a bloated terrifying piece of software while etcd is tiny, fast, efficient.
+Why this project at all? Googling for etcd & clojure returned zero results.
+
 ## Usage
 
 Check on [clojars](https://clojars.org/etcd-clojure) what's the current version.
@@ -40,6 +43,7 @@ Get the machines in the cluster
 
 - Watching a prefix
 - Https
+- Handle paths /foo/foo/etc
 
 ## License
 
