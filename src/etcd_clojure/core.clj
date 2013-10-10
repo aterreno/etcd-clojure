@@ -17,7 +17,7 @@
   (cond-> base-url
           key (str "/keys/" key)
           value (str "?value=" value)
-          ttl (str "?ttl=" ttl)))
+          ttl (str "&ttl=" ttl)))
 
 (defn set
   [key value & {:keys [ttl]}]
