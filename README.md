@@ -4,6 +4,8 @@ A Clojure library to interact with an [etcd](https://github.com/coreos/etcd) ser
 
 ## Usage
 
+Check on [clojars](https://clojars.org/etcd-clojure) what's the current version.
+
 The default server endpoing is http://127.0.0.1 running on port 4001, however you can 'connect' to any server by using the connect! function:
 
 	(connect! "http://127.0.0.1:4001")
@@ -28,7 +30,6 @@ Deleting a value:
 
 ## TODO
 
-- push to clojars
 - Watching a prefix
 - Listing a Directory
 - Https
