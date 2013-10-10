@@ -36,7 +36,6 @@ Deleting a value:
 
 - Watching a prefix
 - Https
-- Nodes operations
 
 ## License
 
