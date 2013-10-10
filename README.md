@@ -24,6 +24,10 @@ Getting a value:
 
 	(get "message")
 
+Listing the root:
+
+	(get "/")
+
 Deleting a value:
 
 	(delete "message")
@@ -31,7 +35,6 @@ Deleting a value:
 ## TODO
 
 - Watching a prefix
-- Listing a Directory
 - Https
 - Nodes operations
 

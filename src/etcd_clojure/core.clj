@@ -34,3 +34,8 @@
 (defn delete
   [key]
   (parse-string (:body (client/delete (build-url :key key)))))
+
+
+(defn machines
+  []
+  (parse-string (:body (client/get (build-url :key "_etcd/machines")))))
