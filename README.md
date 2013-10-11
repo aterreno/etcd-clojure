@@ -50,9 +50,13 @@ Where callback can be for example:
 
 ## TODO
 
-- Watching a prefix
+- Add some 'integration' tests
+- Watching a prefix with index
 - Https
 - Handle paths /foo/foo/etc
+- List a subkeys
+- failover and recovery
+- connect to cluster
 
 ## License
 

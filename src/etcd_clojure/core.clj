@@ -46,3 +46,7 @@
 (defn machines
   []
   (parse-string (:body (client/get (build-url :key "_etcd/machines")))))
+
+(defn leader
+  []
+  (:body (client/get (str base-url "/leader"))))
