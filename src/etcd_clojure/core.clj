@@ -21,6 +21,9 @@
           prev-val (str "&prevValue=" prev-val)
           ttl (str "&ttl=" ttl)))
 
+(defn- when-done [future-to-watch function-to-call]
+  (future (function-to-call @future-to-watch)))
+
 (defn set
   [key value & {:keys [ttl prev-val]}]
   (try (parse-string (:body (client/put (build-url :key key :value value :ttl ttl :prev-val prev-val))))
@@ -35,6 +38,10 @@
   [key]
   (parse-string (:body (client/delete (build-url :key key)))))
 
+(defn watch
+  [key callback]
+  (let [f (future (parse-string (:body (client/get (str base-url "/watch/" key)))))]
+    (when-done f #(callback %)) f))
 
 (defn machines
   []

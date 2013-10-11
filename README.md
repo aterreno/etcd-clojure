@@ -40,6 +40,14 @@ Get the machines in the cluster
 
 	(machines)
 
+Watch for changes to a certain key
+
+	(watch "message" callback)
+
+Where callback can be for example:
+
+	(defn callback[arg] (println arg))
+
 ## TODO
 
 - Watching a prefix
