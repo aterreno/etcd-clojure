@@ -57,6 +57,7 @@ Where callback can be for example:
 - List a subkeys
 - failover and recovery
 - connect to cluster
+- refactor to eliminate repetition of '(parse-string (:body (client/ etc..'
 
 ## License
 
