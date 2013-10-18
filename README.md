@@ -51,6 +51,7 @@ Where callback can be for example:
 ## TODO
 
 - Add some 'integration' tests
+- Update to v2! http://docs.etcd.apiary.io/
 - Watching a prefix with index
 - Https
 - Handle paths /foo/foo/etc
