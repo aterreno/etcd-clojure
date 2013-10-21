@@ -50,8 +50,7 @@ Where callback can be for example:
 
 ## TODO
 
-- Keep adding / fix 'integration' tests
-- Maps should use keywords and not strings for easy use
+- Keep adding 'integration' tests
 - Update to v2! http://docs.etcd.apiary.io/
 - Watching a prefix with index
 - Https
