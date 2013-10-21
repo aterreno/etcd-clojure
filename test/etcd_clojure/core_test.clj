@@ -14,4 +14,4 @@
 (deftest test-get
   (testing "should get a value"
     (etcd/set "foo" "bar")
-    (is (= "bar" (get (etcd/get "foo") "value")))))
+    (is (= "bar" (etcd/get "foo")))))

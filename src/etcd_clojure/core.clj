@@ -32,7 +32,7 @@
 
 (defn get
   [key]
-  (parse-string (:body (client/get (build-url :key key)))))
+  (clojure.core/get (parse-string (:body (client/get (build-url :key key)))) "value"))
 
 (defn delete
   [key]
