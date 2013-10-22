@@ -30,6 +30,12 @@
        (catch Exception e
          (parse-string (get-in (.getData e) [:object :body])))))
 
+(defn create
+  [key value & {:keys [ttl prev-val]}]
+  (try (parse-string (:body (client/post (build-url :key key :value value :ttl ttl :prev-val prev-val))))
+       (catch Exception e
+         (parse-string (get-in (.getData e) [:object :body])))))
+
 (defn get
   [key]
   (clojure.core/get (parse-string (:body (client/get (build-url :key key)))) "value"))
