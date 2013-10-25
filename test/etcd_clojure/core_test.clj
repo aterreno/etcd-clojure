@@ -2,6 +2,19 @@
   (:require [clojure.test :refer :all]
             [etcd-clojure.core :as etcd]))
 
+(defn setup-test []
+  (etcd/connect! "http://127.0.0.1:4001"))
+(defn teardown-test []
+  (println "teardown"))
+
+(defn once-fixtures [f]
+  (setup-test)
+  (try
+    (f)
+    (finally (teardown-test))))
+
+(use-fixtures :once once-fixtures)
+
 (deftest test-set
   (testing "should set a value"
     (is (= "bar" (get (etcd/set "foo" "bar") "value")))))
