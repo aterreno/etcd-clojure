@@ -19,6 +19,10 @@
   (testing "should set a value"
     (is (= "bar" (get (etcd/set "foo" "bar") "value")))))
 
+(deftest test-create
+  (testing "should set a value"
+    (is (= "bar" (get (etcd/create "foo" "bar") "value")))))
+
 (deftest test-delete
   (testing "should delete a value"
     (etcd/set "foo" "bar")
