@@ -39,7 +39,11 @@
 
 (defn get
   [key]
-  (clojure.core/get (parse-string (:body (client/get (build-url :key key)))) "value"))
+  (let [json (parse-string (:body (client/get (build-url :key key))))
+        value (clojure.core/get json "value")]
+    (if value
+      value
+      (map #(clojure.core/get % "key") json))))
 
 (defn delete
   [key]
