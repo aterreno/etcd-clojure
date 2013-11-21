@@ -43,7 +43,7 @@
         value (clojure.core/get json "value")]
     (if value
       value
-      (map #(clojure.core/get % "key") json))))
+      (map #(last (clojure.string/split (clojure.core/get % "key" json) #"/")) json))))
 
 (defn delete
   [key]
