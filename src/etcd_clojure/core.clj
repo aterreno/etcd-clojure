@@ -1,6 +1,7 @@
 (ns etcd-clojure.core
   (:require [clj-http.client :as client])
-  (:require [cheshire.core :refer :all]))
+  (:require [cheshire.core :refer :all])
+  (:refer-clojure :exclude [get set]))
 
 (def ^:private endpoint (atom "http://127.0.0.1:4001"))
 
