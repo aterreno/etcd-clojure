@@ -26,7 +26,7 @@
 (deftest test-delete
   (testing "should delete a value"
     (etcd/set "foo" "bar")
-    (is (= "DELETE" (get (etcd/delete "foo") "action")))))
+    (is (= "delete" (get (etcd/delete "foo") "action")))))
 
 (deftest test-get
   (testing "should get a value"
