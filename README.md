@@ -63,3 +63,7 @@ Where callback can be for example:
 ## License
 
 Apache 2.0
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/aterreno/etcd-clojure/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
