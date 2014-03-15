@@ -7,7 +7,8 @@
 
 (def ^:private api-version "v1")
 
-(def ^:private base-url
+(defn ^:private base-url
+  []
   (str @endpoint "/" api-version))
 
 (defn connect!
@@ -16,7 +17,7 @@
 
 (defn- build-url
   [& {:keys [key value ttl prev-val]}]
-  (cond-> base-url
+  (cond-> (base-url)
           key (str "/keys/" key)
           value (str "?value=" value)
           prev-val (str "&prevValue=" prev-val)
@@ -51,7 +52,7 @@
 
 (defn watch
   [key callback]
-  (let [f (future (parse-string (:body (client/get (str base-url "/watch/" key)))))]
+  (let [f (future (parse-string (:body (client/get (str (base-url) "/watch/" key)))))]
     (when-done f #(callback %)) f))
 
 (defn machines
@@ -60,4 +61,4 @@
 
 (defn leader
   []
-  (:body (client/get (str base-url "/leader"))))
+  (:body (client/get (str (base-url) "/leader"))))
