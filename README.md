@@ -1,8 +1,8 @@
 # etcd-clojure
 
-A Clojure library to interact with an [etcd](https://github.com/coreos/etcd) server .
+A Clojure library to interact with an [etcd](https://github.com/coreos/etcd) server.
 
-Why etcd and not Zookeper? Well Zookeeper is a bloated terrifying piece of software while etcd is tiny, fast, efficient.
+Why etcd and not Zookeeper? Well Zookeeper is a bloated terrifying piece of software while etcd is tiny, fast, efficient.
 
 Why this project at all? Googling for etcd & clojure returned zero results.
 
