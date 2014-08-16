@@ -1,4 +1,4 @@
-(defproject etcd-clojure "0.1.5-SNAPSHOT"
+(defproject etcd-clojure "0.1.5"
   :description "etcd client library in clojure"
   :url "https://github.com/aterreno/etcd-clojure"
   :lein-release {:deploy-via :clojars}
