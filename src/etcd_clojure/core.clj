@@ -3,17 +3,24 @@
   (:require [cheshire.core :refer :all])
   (:refer-clojure :exclude [get set]))
 
+(def ^:private admin-endpoint (atom "http://127.0.0.1:7001"))
+
 (def ^:private endpoint (atom "http://127.0.0.1:4001"))
 
-(def ^:private api-version "v1")
+(def ^:private api-version "v2")
 
 (defn ^:private base-url
   []
   (str @endpoint "/" api-version))
 
+(defn ^:private admin-base-url
+  []
+  (str @admin-endpoint "/" api-version))
+
 (defn connect!
-  [etcd-server-uri]
-  (reset! endpoint etcd-server-uri))
+  [etcd-server-host]
+  (reset! endpoint (format "http://%s:4001" etcd-server-host))
+  (reset! admin-endpoint (format "http://%s:7001" etcd-server-host)))
 
 (defn- build-url
   [& {:keys [key value ttl prev-val]}]
@@ -27,38 +34,62 @@
   (future (function-to-call @future-to-watch)))
 
 (defn set
-  [key value & {:keys [ttl prev-val]}]
-  (try (parse-string (:body (client/put (build-url :key key :value value :ttl ttl :prev-val prev-val))))
-       (catch Exception e
-         (parse-string (get-in (.getData e) [:object :body])))))
-
-(defn create
-  [key value & {:keys [ttl prev-val]}]
-  (try (parse-string (:body (client/post (build-url :key key :value value :ttl ttl :prev-val prev-val))))
-       (catch Exception e
-         (parse-string (get-in (.getData e) [:object :body])))))
+  "Sets a vaue to key, optional param :ttl"
+  [key val & {:keys [ttl]}]
+  (let [data {:value val}
+        url (str (base-url) "/keys/" key)]
+    (if ttl
+      (clojure.core/get-in (parse-string (:body (client/put url {:form-params (assoc data :ttl ttl)}))) ["node" "value"])
+      (clojure.core/get-in (parse-string (:body (client/put url {:form-params data}))) ["node" "value"]))))
 
 (defn get
+  "Gets a value"
   [key]
-  (let [json (parse-string (:body (client/get (build-url :key key))))
-        value (clojure.core/get json "value")]
-    (if value
-      value
-      (map #(last (clojure.string/split (clojure.core/get % "key" json) #"/")) json))))
+  (clojure.core/get-in (parse-string (:body (client/get (str (base-url) "/keys/" key)))) ["node" "value"]))
 
 (defn delete
   [key]
-  (parse-string (:body (client/delete (build-url :key key)))))
+  (parse-string (:body (client/delete (str (base-url) "/keys/" key)))))
+
+(defn delete-dir
+  [key]
+  (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true")))))
+
+(defn delete-dir-recur
+  [key]
+  (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")))))
 
 (defn watch
   [key callback]
   (let [f (future (parse-string (:body (client/get (str (base-url) "/watch/" key)))))]
     (when-done f #(callback %)) f))
 
+(defn stats
+  ""
+  []
+  (parse-string (:body (client/get (str (base-url) "/stats/leader")))))
+
+(defn self-stats
+  ""
+  []
+  (parse-string(:body (client/get (str (base-url) "/stats/self")))))
+
+(defn store-stats
+  ""
+  []
+  (parse-string (:body (client/get (str (base-url) "/stats/store")))))
+
 (defn machines
   []
-  (parse-string (:body (client/get (build-url :key "_etcd/machines")))))
+  (println (str (admin-base-url) api-version "/admin/machines"))
+  (parse-string (:body (client/get (str (admin-base-url) "/admin/machines")))))
 
-(defn leader
+(defn get-config
+  ""
   []
-  (:body (client/get (str (base-url) "/leader"))))
+  (parse-string (:body (client/get (str (admin-base-url) "/admin/config")))))
+
+(defn get-version
+  ""
+  []
+  (:body (client/get (str @endpoint "/version"))))
