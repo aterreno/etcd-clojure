@@ -15,62 +15,64 @@ This library now supports V2 of the etcd API.
 
 The default server endpoing is http://127.0.0.1 running on port 4001, however you can 'connect' to any server by using the connect! function:
 
-	(connect! "127.0.0.1")
+	(connect! "196.0.0.1")
+
+	(connect! "196.0.0.1" 4001)
+
+	(connect! "196.0.0.1" 4001 7001)
 
 ##Getting the etcd version
 	(version)
 
 ##Key Space Operations
-###Setting the value of a key
+###Setting the value of a key, with optional time to live
 
-	(set "message" "somevalue")
+	(set "key" "value")
 
-	(set "message" "somevalue" :ttl 5)
+	(set "key" "value" :ttl 5)
 
 ###Get the value of a key
 
-	(get "message")
+	(get "key")
 
 ###Changing the value of a key
 
-	(set "message" "someothervalue")	
+	(set "key" "someothervalue")	
 
 ###Deleting a key
 
-	(delete "message")
-
-###Using key TTL
-
-	(set "message" "somevalue" :ttl 5)
-
+	(delete "key")
 
 ###Waiting for a change
 
-	(watch "message" callback)
+	(watch "key"
+### callback)
 
 Where callback can be for example:
 
 	(defn callback[arg] (println arg))
 
-You can also use the atomic test and set by providing the :prev-val param:
-
-	(set "message" "somenewvalue" :prev-val "somevalue")
-
 ###Atomically Creating In-Order Keys
 
-	(create-in-order "message" "somenewvalue")
+	(create-in-order "key"
+### "somenewvalue")
+
+### TODO  You can also use the atomic test and set by providing the :prev-val param:
+
+	(set "key"
+### "somenewvalue" :prev-val "somevalue")
 
 ###Listing a directory
-	(list "directory")
+	(list "/directory")
 
 ###Listing a directory in order 
-	(list-in-order "directory")
+	(list-in-order "/directory")
 
 ###Creating a directory 
-	(create-dir "directory")
+	(create-dir "/directory")
 
 ###Deleting a directory
-	(delete-dir "directory")
+	(delete-dir "/directory")
 
 ###Deleting a value:
 	(delete "key")

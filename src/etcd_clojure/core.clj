@@ -17,13 +17,20 @@
   []
   (str @admin-endpoint "/" api-version))
 
-(defn connect!
-  [etcd-server-host]
-  (reset! endpoint (format "http://%s:4001" etcd-server-host))
-  (reset! admin-endpoint (format "http://%s:7001" etcd-server-host)))
-
 (defn- when-done [future-to-watch function-to-call]
   (future (function-to-call @future-to-watch)))
+
+(defn connect!
+  ([etcd-server-host] (connect! etcd-server-host 4001 7001))
+  ([etcd-server-host port] (connect! etcd-server-host port 7001))
+  ([etcd-server-host port admin-port]
+     [(reset! endpoint (format "http://%s:%s" etcd-server-host port))
+      (reset! admin-endpoint (format "http://%s:%s" etcd-server-host admin-port))]))
+
+(defn version
+  "Gets the etcd server version"
+  []
+  (:body (client/get (str @endpoint "/version"))))
 
 (defn set
   "Sets a vaue to key, optional param :ttl"
@@ -47,12 +54,12 @@
 (defn delete-dir
   "Deletes a dir"
   [key]
-  (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true")))))
+  (clojure.core/get-in (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true")))) ["node" "key"]))
 
 (defn delete-dir-recur
   "Deletes a directory recursively"
   [key]
-  (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")))))
+  (clojure.core/get-in (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")))) ["node" "key"]))
 
 (defn create-in-order
   "Creates in order"
@@ -110,8 +117,3 @@
   "Gets the config"
   []
   (parse-string (:body (client/get (str (admin-base-url) "/admin/config")))))
-
-(defn version
-  "Gets the etcd server version"
-  []
-  (:body (client/get (str @endpoint "/version"))))
