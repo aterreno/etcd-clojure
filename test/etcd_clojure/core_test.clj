@@ -21,6 +21,7 @@
 (defn teardown []
   (try
     (etcd/delete-dir-recur "test-dir")
+    (etcd/delete-dir-recur "queue")
     (catch Exception e)))
 
 (defn each-fixture [f]
@@ -63,3 +64,19 @@
     (etcd/create-dir "test-dir")
     (etcd/set "test-dir/test-val-on-dir" "bar")
     (is (= "/test-dir" (etcd/delete-dir-recur "test-dir")))))
+
+(deftest test-create-and-list-in-order
+  (testing "should be able to create and retrieve values in order"
+    (etcd/create-in-order "queue" "1")
+    (etcd/create-in-order "queue" "2")
+    (etcd/create-in-order "queue" "3")
+    (is (= ["1" "2" "3"] (etcd/list-in-order "queue")))))
+
+(deftest test-list-directory
+  (testing "should list the content of a directory"
+    (etcd/create-dir "test-dir")
+    (etcd/set "test-dir/test-val1-on-dir" "1")
+    (etcd/set "test-dir/test-val2-on-dir" "2")
+    (etcd/set "test-dir/test-val3-on-dir" "3")
+    (is (= 3
+           (count (etcd/list "test-dir"))))))

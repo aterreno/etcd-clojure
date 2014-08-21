@@ -71,7 +71,8 @@
   "Lists the content of a directory"
   [key & {:keys [recursive]}]
   (let [url (str (base-url) "/keys/" key "?recursive=" recursive)]
-    (clojure.core/get-in (parse-string (:body (client/get url ))) ["node"])))
+    (map #(assoc {} :key (clojure.core/get % "key") :value (clojure.core/get % "value"))
+         (clojure.core/get-in (parse-string (:body (client/get url ))) ["node" "nodes"]))))
 
 (defn list-in-order
   "Lists the content of a directory recursively and in order"
