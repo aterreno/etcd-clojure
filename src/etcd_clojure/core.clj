@@ -106,12 +106,12 @@
   []
   (parse-string (:body (client/get (str (admin-base-url) "/admin/machines")))))
 
-(defn get-config
+(defn config
   "Gets the config"
   []
   (parse-string (:body (client/get (str (admin-base-url) "/admin/config")))))
 
-(defn get-version
+(defn version
   "Gets the etcd server version"
   []
   (:body (client/get (str @endpoint "/version"))))
