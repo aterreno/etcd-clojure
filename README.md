@@ -94,12 +94,9 @@ Where callback can be for example:
 
 ## TODO
 
-- ttl -d ttl=5
-- test watch
-- Watching a prefix with index
-- Https
-- Handle paths /foo/foo/etc
-- List a subkeys
+- Wait for value (revisit/test)
+- Atomic Compare-and-Swap
+- Atomic Compare-and-Delete
 - failover and recovery
 - connect to cluster
 
