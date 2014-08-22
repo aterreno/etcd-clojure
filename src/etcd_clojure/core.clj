@@ -20,6 +20,12 @@
 (defn- when-done [future-to-watch function-to-call]
   (future (function-to-call @future-to-watch)))
 
+(defmacro http-perform
+  ([body base]
+     `(parse-string (:body (~body (str ~base)))))
+  ([body base path]
+     `(parse-string (:body (~body (str ~base ~path))))))
+
 (defn connect!
   ([etcd-server-host] (connect! etcd-server-host 4001 7001))
   ([etcd-server-host port] (connect! etcd-server-host port 7001))
@@ -72,7 +78,7 @@
   [key & {:keys [recursive]}]
   (let [url (str (base-url) "/keys/" key "?recursive=" recursive)]
     (map #(assoc {} :key (clojure.core/get % "key") :value (clojure.core/get % "value"))
-         (clojure.core/get-in (parse-string (:body (client/get url ))) ["node" "nodes"]))))
+         (clojure.core/get-in (http-perform client/get url) ["node" "nodes"]))))
 
 (defn list-in-order
   "Lists the content of a directory recursively and in order"
@@ -97,24 +103,24 @@
 (defn stats
   "Leader stats"
   []
-  (parse-string (:body (client/get (str (base-url) "/stats/leader")))))
+  (http-perform client/get (base-url) "/stats/leader"))
 
 (defn self-stats
   "Self Stats"
   []
-  (parse-string(:body (client/get (str (base-url) "/stats/self")))))
+  (http-perform client/get (base-url) "/stats/self"))
 
 (defn store-stats
   "Store stats"
   []
-  (parse-string (:body (client/get (str (base-url) "/stats/store")))))
+  (http-perform client/get (base-url) "/stats/store"))
 
 (defn machines
   "Machines"
   []
-  (parse-string (:body (client/get (str (admin-base-url) "/admin/machines")))))
+  (http-perform client/get (admin-base-url) "/admin/machines"))
 
 (defn config
   "Gets the config"
   []
-  (parse-string (:body (client/get (str (admin-base-url) "/admin/config")))))
+  (http-perform client/get (admin-base-url) "/admin/config"))
