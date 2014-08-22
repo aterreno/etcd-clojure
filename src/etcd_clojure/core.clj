@@ -32,6 +32,17 @@
   ([method base data]
      `(parse-string (:body (~method ~base ~data)))))
 
+(defn compose-params
+  [& {:keys [ttl prev-value prev-index prev-exists dir val]}]
+  (cond->
+   {}
+   val (assoc :value val)
+   dir (assoc :dir dir)
+   ttl (assoc :ttl ttl)
+   prev-value (assoc :prevValue prev-value)
+   prev-index (assoc :prevIndex prev-index)
+   (not (nil? prev-exists)) (assoc :prevExists prev-exists)))
+
 (defn connect!
   ([etcd-server-host] (connect! etcd-server-host 4001 7001))
   ([etcd-server-host port] (connect! etcd-server-host port 7001))
@@ -47,11 +58,9 @@
 (defn set
   "Sets a vaue to key, optional param :ttl"
   [key val & {:keys [ttl]}]
-  (let [data {:value val}
+  (let [params (compose-params :ttl ttl :val val)
         url (str (base-url) "/keys/" key)]
-    (if ttl
-      (get-in (send-json http/put url {:form-params (assoc data :ttl ttl)}) ["node" "value"])
-      (get-in (send-json http/put url {:form-params data}) ["node" "value"]))))
+    (get-in (send-json http/put url {:form-params params}) ["node" "value"])))
 
 (defn get
   "Gets a value"
@@ -94,12 +103,15 @@
 
 (defn create-dir
   "Creates a dir"
-  [key & {:keys [ttl]}]
-  (let [data {:value val :dir true}
+  [key & {:keys [ttl prev-value prev-index prev-exists]}]
+  (let [params (compose-params
+                :ttl ttl
+                :prev-value prev-value
+                :prev-index prev-index
+                :prev-exists prev-exists
+                :dir true)
         url (str (base-url) "/keys/" key)]
-    (if ttl
-      (get-in (send-json http/put url {:form-params (assoc data :ttl ttl)}) ["node" "key"])
-      (get-in (send-json http/put url {:form-params data}) ["node" "key"]))))
+    (get-in (send-json http/put url {:form-params params}) ["node" "key"])))
 
 (defn watch
   [key callback]
