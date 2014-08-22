@@ -1,4 +1,5 @@
 (ns etcd-clojure.core
+  (:use [etcd-clojure.util])
   (:require [clj-http.client :as http])
   (:require [cheshire.core :refer :all])
   (:refer-clojure :exclude [get set]))
@@ -16,32 +17,6 @@
 (defn ^:private admin-base-url
   []
   (str @admin-endpoint "/" api-version))
-
-(defn- when-done [future-to-watch function-to-call]
-  (future (function-to-call @future-to-watch)))
-
-(defmacro get-json
-  ([method base]
-     `(parse-string (:body (~method (str ~base)))))
-  ([method base path]
-     `(parse-string (:body (~method (str ~base ~path))))))
-
-(defmacro send-json
-  ([method base]
-     `(parse-string (:body (~method ~base))))
-  ([method base data]
-     `(parse-string (:body (~method ~base ~data)))))
-
-(defn compose-params
-  [& {:keys [ttl prev-value prev-index prev-exist dir val]}]
-  (cond->
-   {}
-   val (assoc :value val)
-   dir (assoc :dir dir)
-   ttl (assoc :ttl ttl)
-   prev-value (assoc :prevValue prev-value)
-   prev-index (assoc :prevIndex prev-index)
-   (not (nil? prev-exist)) (assoc :prevExist prev-exist)))
 
 (defn connect!
   ([etcd-server-host] (connect! etcd-server-host 4001 7001))
