@@ -96,6 +96,7 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 
 ## TODO
 
+- Delete is the only function not doing a get-in and returning a whole map..
 - Wait for value (revisit/test)
 - Atomic Compare-and-Set (test only)
 - Atomic Compare-and-Delete (test, docs)
