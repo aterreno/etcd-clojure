@@ -80,3 +80,30 @@
     (etcd/set "test-dir/test-val3-on-dir" "3")
     (is (= 3
            (count (etcd/list "test-dir"))))))
+
+(deftest test-stats
+  (testing "should retrive stats"
+    (is (and
+         (contains? (etcd/stats) "leader")
+         (contains? (etcd/stats) "followers")))))
+
+(deftest test-self-stats
+  (testing "should retrive self stats"
+    (is (=
+         ["name" "state" "startTime" "leaderInfo" "recvAppendRequestCnt" "sendAppendRequestCnt"]
+         (keys (etcd/self-stats))))))
+
+(deftest test-store-stats
+  (testing "should retrive store stats"
+    (is (not (nil?
+              (etcd/store-stats))))))
+
+(deftest test-machines
+  (testing "should retrive machines"
+    (is (= 1
+           (count (etcd/machines))))))
+
+(deftest test-config
+  (testing "should retrive config"
+    (is (= 3
+           (count (keys (etcd/config)))))))
