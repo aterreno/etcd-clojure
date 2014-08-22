@@ -45,8 +45,7 @@ The default server endpoing is http://127.0.0.1 running on port 4001, however yo
 
 ###Waiting for a change
 
-	(watch "key"
-### callback)
+	(watch "key" callback)
 
 Where callback can be for example:
 
@@ -55,12 +54,15 @@ Where callback can be for example:
 ###Atomically Creating In-Order Keys
 
 	(create-in-order "key"
-### "somenewvalue")
 
-### TODO  You can also use the atomic test and set by providing the :prev-val param:
+###Atomic Compare-and-Swap
 
-	(set "key"
-### "somenewvalue" :prev-val "somevalue")
+This reflects the example on the [etcd api page](https://github.com/coreos/etcd/blob/master/Documentation/api.md)
+
+	(set "foo" "one")
+	(set "foo" "three" :prev-exist false)
+	(set "foo" "two" :prev-value "one")
+
 
 ###Listing a directory
 	(list "/directory")
@@ -95,10 +97,9 @@ Where callback can be for example:
 ## TODO
 
 - Wait for value (revisit/test)
-- Atomic Compare-and-Swap
-- Atomic Compare-and-Delete
-- failover and recovery
-- connect to cluster
+- Atomic Compare-and-Set (test only)
+- Atomic Compare-and-Delete (test, docs)
+- connect to cluster, failover and recovery
 
 ## License
 
