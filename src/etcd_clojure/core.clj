@@ -21,10 +21,10 @@
   (future (function-to-call @future-to-watch)))
 
 (defmacro http-perform
-  ([body base]
-     `(parse-string (:body (~body (str ~base)))))
-  ([body base path]
-     `(parse-string (:body (~body (str ~base ~path))))))
+  ([method base]
+     `(parse-string (:body (~method (str ~base)))))
+  ([method base path]
+     `(parse-string (:body (~method (str ~base ~path))))))
 
 (defn connect!
   ([etcd-server-host] (connect! etcd-server-host 4001 7001))
@@ -50,22 +50,22 @@
 (defn get
   "Gets a value"
   [key]
-  (clojure.core/get-in (parse-string (:body (client/get (str (base-url) "/keys/" key)))) ["node" "value"]))
+  (clojure.core/get-in (http-perform client/get (str (base-url) "/keys/" key)) ["node" "value"]))
 
 (defn delete
   "Deletes a value"
   [key]
-  (parse-string (:body (client/delete (str (base-url) "/keys/" key)))))
+  (http-perform client/delete (str (base-url) "/keys/" key)))
 
 (defn delete-dir
   "Deletes a dir"
   [key]
-  (clojure.core/get-in (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true")))) ["node" "key"]))
+  (clojure.core/get-in (http-perform client/delete (str (base-url) "/keys/" key "?dir=true")) ["node" "key"]))
 
 (defn delete-dir-recur
   "Deletes a directory recursively"
   [key]
-  (clojure.core/get-in (parse-string (:body (client/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")))) ["node" "key"]))
+  (clojure.core/get-in (http-perform client/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")) ["node" "key"]))
 
 (defn create-in-order
   "Creates in order"
@@ -84,7 +84,7 @@
   "Lists the content of a directory recursively and in order"
   [key]
   (let [url (str (base-url) "/keys/" key "?recursive=true&sorted=true")]
-    (map #(clojure.core/get % "value") (clojure.core/get-in (parse-string (:body (client/get url ))) ["node" "nodes"]))))
+    (map #(clojure.core/get % "value") (clojure.core/get-in (http-perform client/get url)  ["node" "nodes"]))))
 
 (defn create-dir
   "Creates a dir"
@@ -92,12 +92,12 @@
   (let [data {:value val :dir true}
         url (str (base-url) "/keys/" key)]
     (if ttl
-      (clojure.core/get-in (parse-string (:body (client/put url {:form-params (assoc data :ttl ttl)}))) ["node" "key"])
+      (clojure.core/get-in (parse-string (:body client/put url {:form-params (assoc data :ttl ttl)})) ["node" "key"])
       (clojure.core/get-in (parse-string (:body (client/put url {:form-params data}))) ["node" "key"]))))
 
 (defn watch
   [key callback]
-  (let [f (future (parse-string (:body (client/get (str (base-url) "/watch/" key)))))]
+  (let [f (future (http-perform client/get (str (base-url) "/watch/" key)))]
     (when-done f #(callback %)) f))
 
 (defn stats
