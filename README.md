@@ -11,7 +11,7 @@ Now there are a bunch of alternatives, pick up your favourite from etcd [clients
 
 Check on [clojars](https://clojars.org/etcd-clojure) what's the current version.
 
-This library now supports V2 of the etcd API. 
+This library now supports V2 of the etcd API.
 
 The default server endpoing is http://127.0.0.1 running on port 4001, however you can 'connect' to any server by using the connect! function:
 
@@ -37,7 +37,7 @@ The default server endpoing is http://127.0.0.1 running on port 4001, however yo
 
 ###Changing the value of a key
 
-	(set "key" "someothervalue")	
+	(set "key" "someothervalue")
 
 ###Deleting a key
 
@@ -67,10 +67,10 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 ###Listing a directory
 	(list "/directory")
 
-###Listing a directory in order 
+###Listing a directory in order
 	(list-in-order "/directory")
 
-###Creating a directory 
+###Creating a directory
 	(create-dir "/directory")
 
 ###Deleting a directory
@@ -96,7 +96,6 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 
 ## TODO
 
-- Delete is the only function not doing a get-in and returning a whole map..
 - Wait for value (revisit/test)
 - Atomic Compare-and-Set (test only)
 - Atomic Compare-and-Delete (test, docs)

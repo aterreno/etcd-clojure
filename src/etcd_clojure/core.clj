@@ -51,7 +51,7 @@
 (defn delete
   "Deletes a value"
   [key]
-  (send-json http/delete (str (base-url) "/keys/" key)))
+  (get-in (send-json http/delete (str (base-url) "/keys/" key))["node" "key"]))
 
 (defn delete-dir
   "Deletes a dir"

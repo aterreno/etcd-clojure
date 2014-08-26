@@ -48,7 +48,7 @@
 (deftest test-delete
   (testing "should delete a value"
     (etcd/set "foo-test" "bar")
-    (is (= "delete" (get (etcd/delete "foo-test") "action")))))
+    (is (= "/foo-test" (etcd/delete "foo-test")))))
 
 (deftest test-create-dir
   (testing "should create a directory"
