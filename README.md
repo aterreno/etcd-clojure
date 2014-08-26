@@ -35,6 +35,12 @@ The default server endpoing is http://127.0.0.1 running on port 4001, however yo
 
 	(get "key")
 
+###Waiting for a change
+
+	(defn callback[arg] (println (str "Key change: " arg)))
+
+	(get "key" :wait true :callback callback)
+
 ###Changing the value of a key
 
 	(set "key" "someothervalue")
@@ -96,8 +102,7 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 
 ## TODO
 
-- Atomic Compare-and-Set (test only)
-- Atomic Compare-and-Delete (test, docs)
+- Atomic Compare-and-Delete (code, docs)
 - connect to cluster, failover and recovery
 
 ## License
