@@ -32,7 +32,7 @@
 
 (defn set
   "Sets a vaue to key, optional param :ttl"
-  [key val & {:keys [ttl prev-value prev-index prev-exist]}]
+  [key val & {:keys [ttl prev-value prev-index prev-exist wait]}]
   (let
       [params (compose-params
                 :ttl ttl
@@ -45,8 +45,13 @@
 
 (defn get
   "Gets a value"
-  [key]
-  (get-in (get-json http/get (str (base-url) "/keys/" key)) ["node" "value"]))
+  [key & {:keys [wait callback]}]
+  (let [url (str (base-url) "/keys/" key)]
+    (if (nil? wait)
+      (get-in (get-json http/get url) ["node" "value"])
+      (let [f (future (get-in (get-json http/get (str url "?" (compose-query-string {"wait" wait}))) ["node" "value"]))]
+        (when-done f #(callback %)) f))
+    ))
 
 (defn delete
   "Deletes a value"
@@ -93,11 +98,6 @@
                 :dir true)
         url (str (base-url) "/keys/" key)]
     (get-in (send-json http/put url {:form-params params}) ["node" "key"])))
-
-(defn watch
-  [key callback]
-  (let [f (future (get-json http/get (str (base-url) "/watch/" key)))]
-    (when-done f #(callback %)) f))
 
 (defn stats
   "Leader stats"

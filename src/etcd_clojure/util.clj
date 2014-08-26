@@ -1,11 +1,19 @@
 (ns etcd-clojure.util
+  (:use [ring.util.codec :refer [url-encode]])
   (:require [cheshire.core :refer :all]))
+
 
 (defn when-done [future-to-watch function-to-call]
   (future (function-to-call @future-to-watch)))
 
+(defn compose-query-string [m]
+  (->> (for [[k v] m]
+         (str (url-encode k) "=" (url-encode v)))
+       (interpose "&")
+       (apply str)))
+
 (defn compose-params
-  [& {:keys [ttl prev-value prev-index prev-exist dir val]}]
+  [& {:keys [ttl prev-value prev-index prev-exist dir val wait]}]
   (cond->
    {}
    val (assoc :value val)
@@ -13,7 +21,8 @@
    ttl (assoc :ttl ttl)
    prev-value (assoc :prevValue prev-value)
    prev-index (assoc :prevIndex prev-index)
-   (not (nil? prev-exist)) (assoc :prevExist prev-exist)))
+   (not (nil? prev-exist)) (assoc :prevExist prev-exist)
+   (not (nil? wait)) (assoc :wait wait)))
 
 (defmacro get-json
   ([method base]

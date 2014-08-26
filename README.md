@@ -96,7 +96,6 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 
 ## TODO
 
-- Wait for value (revisit/test)
 - Atomic Compare-and-Set (test only)
 - Atomic Compare-and-Delete (test, docs)
 - connect to cluster, failover and recovery
