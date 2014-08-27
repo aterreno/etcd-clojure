@@ -9,7 +9,8 @@ Now there are a bunch of alternatives, pick up your favourite from etcd [clients
 
 ## Usage
 
-Check on [clojars](https://clojars.org/etcd-clojure) what's the current version.
+
+[![Clojars Project](http://clojars.org/etcd-clojure/latest-version.svg)](http://clojars.org/etcd-clojure)
 
 This library now supports V2 of the etcd API.
 
