@@ -103,7 +103,9 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 ## TODO
 
 - Atomic Compare-and-Delete (code, docs)
-- connect to cluster, failover and recovery
+- SSL
+- connect to cluster
+- failover and recovery
 
 ## License
 
