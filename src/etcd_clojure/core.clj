@@ -49,14 +49,18 @@
   (let [url (str (base-url) "/keys/" key)]
     (if (nil? wait)
       (get-in (get-json http/get url) ["node" "value"])
-      (let [f (future (get-in (get-json http/get (str url "?" (compose-query-string {"wait" wait}))) ["node" "value"]))]
+      (let [f (future (get-in (get-json http/get (str url "?" (compose-query-string {:wait wait}))) ["node" "value"]))]
         (when-done f #(callback %)) f))
     ))
 
 (defn delete
   "Deletes a value"
-  [key]
-  (get-in (send-json http/delete (str (base-url) "/keys/" key))["node" "key"]))
+  [key & {:keys [prev-value prev-index prev-exist]}]
+  (let [query-string (compose-query-string {:prevValue prev-value :prevIndex prev-index})
+        url (str (base-url) "/keys/" key)]
+    (if (empty? [prev-value prev-index prev-exist])
+      (get-in (send-json http/delete url)["node" "key"])
+      (get-in (send-json http/delete (str url "?" query-string))["node" "key"]))))
 
 (defn delete-dir
   "Deletes a dir"
@@ -89,12 +93,9 @@
 
 (defn create-dir
   "Creates a dir"
-  [key & {:keys [ttl prev-value prev-index prev-exist]}]
+  [key & {:keys [ttl]}]
   (let [params (compose-params
                 :ttl ttl
-                :prev-value prev-value
-                :prev-index prev-index
-                :prev-exist prev-exist
                 :dir true)
         url (str (base-url) "/keys/" key)]
     (get-in (send-json http/put url {:form-params params}) ["node" "key"])))

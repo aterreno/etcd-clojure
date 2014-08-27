@@ -69,6 +69,13 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 	(set "foo" "three" :prev-exist false)
 	(set "foo" "two" :prev-value "one")
 
+###Atomic Compare-and-Delete
+
+This reflects the example on the [etcd api page](https://github.com/coreos/etcd/blob/master/Documentation/api.md)
+
+	(set "foo" "one")
+	(delete "foo" :prev-value "two")
+	(delete "foo" :prev-index 1)
 
 ###Listing a directory
 	(list "/directory")
@@ -102,10 +109,9 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 
 ## TODO
 
-- Atomic Compare-and-Delete (code, docs)
-- SSL
 - connect to cluster
 - failover and recovery
+- SSL (looks tricky - might need to change clj-http)
 
 ## License
 
