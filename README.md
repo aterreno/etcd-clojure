@@ -14,7 +14,7 @@ Now there are a bunch of alternatives, pick up your favourite from etcd [clients
 
 This library now supports V2 of the etcd API.
 
-The default server endpoing is http://127.0.0.1 running on port 4001, however you can 'connect' to any server by using the connect! function:
+The default server endpoint is http://127.0.0.1 running on port 4001, however you can 'connect' to any server by using the connect! function:
 
 	(connect! "196.0.0.1")
 
