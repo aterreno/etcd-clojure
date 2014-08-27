@@ -50,10 +50,6 @@ The default server endpoint is http://127.0.0.1 running on port 4001, however yo
 
 	(delete "key")
 
-###Waiting for a change
-
-	(watch "key" callback)
-
 Where callback can be for example:
 
 	(defn callback[arg] (println arg))
