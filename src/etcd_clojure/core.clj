@@ -2,7 +2,7 @@
   (:use [etcd-clojure.util])
   (:require [clj-http.client :as http])
   (:require [cheshire.core :refer :all])
-  (:refer-clojure :exclude [get set]))
+  (:refer-clojure :exclude [list get set]))
 
 (def ^:private admin-endpoint (atom "http://127.0.0.1:7001"))
 
