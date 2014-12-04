@@ -1,4 +1,5 @@
 # etcd-clojure
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/aterreno/etcd-clojure?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 A Clojure library to interact with an [etcd](https://github.com/coreos/etcd) server.
 
