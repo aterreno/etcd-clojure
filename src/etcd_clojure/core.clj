@@ -18,12 +18,26 @@
   []
   (str @admin-endpoint "/" api-version))
 
+(def ^:dynamic *throw-on-error* true)
+
 (defn connect!
   ([etcd-server-host] (connect! etcd-server-host 4001 7001))
   ([etcd-server-host port] (connect! etcd-server-host port 7001))
   ([etcd-server-host port admin-port]
      [(reset! endpoint (format "http://%s:%s" etcd-server-host port))
       (reset! admin-endpoint (format "http://%s:%s" etcd-server-host admin-port))]))
+
+(defn api-get-in
+  [response ks]
+  (let [error-code (clojure.core/get response "errorCode")]
+    ;; 100 shows that key does not exist, nill will be returned from
+    ;;  NE-path in response
+    (if (and error-code (not= error-code 100))
+      (if *throw-on-error*
+        (throw (ex-info (clojure.core/get response "message")
+                        response))
+        response)
+    (get-in response ks))))
 
 (defn version
   "Gets the etcd server version"
@@ -41,15 +55,15 @@
                 :prev-index prev-index
                 :prev-exist prev-exist)
         url (str (base-url) "/keys/" key)]
-    (get-in (send-json http/put url {:form-params params}) ["node" "value"])))
+    (api-get-in (send-json http/put url {:form-params params}) ["node" "value"])))
 
 (defn get
   "Gets a value"
   [key & {:keys [wait callback]}]
   (let [url (str (base-url) "/keys/" key)]
     (if (nil? wait)
-      (get-in (get-json http/get url) ["node" "value"])
-      (let [f (future (get-in (get-json http/get (str url "?" (compose-query-string {:wait wait}))) ["node" "value"]))]
+      (api-get-in (get-json http/get url) ["node" "value"])
+      (let [f (future (api-get-in (get-json http/get (str url "?" (compose-query-string {:wait wait}))) ["node" "value"]))]
         (when-done f #(callback %)) f))
     ))
 
@@ -59,37 +73,37 @@
   (let [query-string (compose-query-string {:prevValue prev-value :prevIndex prev-index})
         url (str (base-url) "/keys/" key)]
     (if (empty? [prev-value prev-index prev-exist])
-      (get-in (send-json http/delete url)["node" "key"])
-      (get-in (send-json http/delete (str url "?" query-string))["node" "key"]))))
+      (api-get-in (send-json http/delete url) ["node" "key"])
+      (api-get-in (send-json http/delete (str url "?" query-string)) ["node" "key"]))))
 
 (defn delete-dir
   "Deletes a dir"
   [key]
-  (get-in (send-json http/delete (str (base-url) "/keys/" key "?dir=true")) ["node" "key"]))
+  (api-get-in (send-json http/delete (str (base-url) "/keys/" key "?dir=true")) ["node" "key"]))
 
 (defn delete-dir-recur
   "Deletes a directory recursively"
   [key]
-  (get-in (send-json http/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")) ["node" "key"]))
+  (api-get-in (send-json http/delete (str (base-url) "/keys/" key "?dir=true&recursive=true")) ["node" "key"]))
 
 (defn create-in-order
   "Creates in order"
   [key value]
   (let [url (str (base-url) "/keys/" key)]
-    (get-in (send-json http/post url {:form-params {:value value}}) ["node" "value"])))
+    (api-get-in (send-json http/post url {:form-params {:value value}}) ["node" "value"])))
 
 (defn list
   "Lists the content of a directory"
   [key & {:keys [recursive]}]
   (let [url (str (base-url) "/keys/" key "?recursive=" recursive)]
     (map #(assoc {} :key (clojure.core/get % "key") :value (clojure.core/get % "value"))
-         (get-in (get-json http/get url) ["node" "nodes"]))))
+         (api-get-in (get-json http/get url) ["node" "nodes"]))))
 
 (defn list-in-order
   "Lists the content of a directory recursively and in order"
   [key]
   (let [url (str (base-url) "/keys/" key "?recursive=true&sorted=true")]
-    (map #(clojure.core/get % "value") (get-in (get-json http/get url)  ["node" "nodes"]))))
+    (map #(clojure.core/get % "value") (api-get-in (get-json http/get url) ["node" "nodes"]))))
 
 (defn create-dir
   "Creates a dir"
@@ -98,7 +112,7 @@
                 :ttl ttl
                 :dir true)
         url (str (base-url) "/keys/" key)]
-    (get-in (send-json http/put url {:form-params params}) ["node" "key"])))
+    (api-get-in (send-json http/put url {:form-params params}) ["node" "key"])))
 
 (defn stats
   "Leader stats"

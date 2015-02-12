@@ -26,12 +26,12 @@
 
 (defmacro get-json
   ([method base]
-     `(parse-string (:body (~method (str ~base)))))
+     `(parse-string (:body (~method (str ~base) {:throw-exceptions false}))))
   ([method base path]
-     `(parse-string (:body (~method (str ~base ~path))))))
+     `(parse-string (:body (~method (str ~base ~path) {:throw-exceptions false})))))
 
 (defmacro send-json
   ([method base]
-     `(parse-string (:body (~method ~base))))
+     `(parse-string (:body (~method ~base {:throw-exceptions false}))))
   ([method base data]
-     `(parse-string (:body (~method ~base ~data)))))
+     `(parse-string (:body (~method ~base (merge ~data {:throw-exceptions false}))))))

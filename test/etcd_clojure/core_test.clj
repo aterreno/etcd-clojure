@@ -34,7 +34,7 @@
 
 (deftest test-version
   (testing "should get some value from the server: note hardcoded version"
-    (is (= "etcd 0.4.5" (etcd/version)))))
+    (is (not (nil? (re-matches  #"^etcd\s.*" (etcd/version)))))))
 
 (deftest test-set
   (testing "should set a value"
