@@ -94,7 +94,7 @@
 
 (defn list
   "Lists the content of a directory"
-  [key & {:keys [recursive]}]
+  [key & {:keys [recursive] :or {recursive false}}]
   (let [url (str (base-url) "/keys/" key "?recursive=" recursive)]
     (map #(assoc {} :key (clojure.core/get % "key") :value (clojure.core/get % "value"))
          (api-get-in (get-json http/get url) ["node" "nodes"]))))
