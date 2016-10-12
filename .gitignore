@@ -12,3 +12,5 @@ pom.xml.asc
 *.class
 /.lein-*
 /.nrepl-port
+.idea/
+etcd-clojure.iml
