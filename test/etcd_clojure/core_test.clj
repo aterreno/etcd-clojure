@@ -4,8 +4,7 @@
 
 (defn setup-test []
   (let [connect (etcd/connect! "127.0.0.1")]
-    (is (= "http://127.0.0.1:4001") (first connect))
-    (is (= "http://127.0.0.1:7001") (last connect))))
+    (is (= "http://127.0.0.1:2379") (first connect))))
 
 (defn teardown-test []
   (println "teardown"))
@@ -34,7 +33,9 @@
 
 (deftest test-version
   (testing "should get some value from the server: note hardcoded version"
-    (is (not (nil? (re-matches  #"^etcd\s.*" (etcd/version)))))))
+    (is (=
+          ["etcdserver","etcdcluster"]
+          (keys (etcd/version))))))
 
 (deftest test-set
   (testing "should set a value"
@@ -89,8 +90,7 @@
 
 (deftest test-self-stats
   (testing "should retrive self stats"
-    (is (=
-         ["name" "state" "startTime" "leaderInfo" "recvAppendRequestCnt" "sendAppendRequestCnt"]
+    (is (= '("name" "id" "state" "startTime" "leaderInfo" "recvAppendRequestCnt" "sendAppendRequestCnt")
          (keys (etcd/self-stats))))))
 
 (deftest test-store-stats
@@ -101,9 +101,4 @@
 (deftest test-machines
   (testing "should retrive machines"
     (is (= 1
-           (count (etcd/machines))))))
-
-(deftest test-config
-  (testing "should retrive config"
-    (is (= 3
-           (count (keys (etcd/config)))))))
+           (count (etcd/members))))))

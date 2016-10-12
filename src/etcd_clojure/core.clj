@@ -4,9 +4,7 @@
   (:require [cheshire.core :refer :all])
   (:refer-clojure :exclude [list get set]))
 
-(def ^:private admin-endpoint (atom "http://127.0.0.1:7001"))
-
-(def ^:private endpoint (atom "http://127.0.0.1:4001"))
+(def ^:private endpoint (atom "http://127.0.0.1:2379"))
 
 (def ^:private api-version "v2")
 
@@ -14,18 +12,12 @@
   []
   (str @endpoint "/" api-version))
 
-(defn ^:private admin-base-url
-  []
-  (str @admin-endpoint "/" api-version))
-
 (def ^:dynamic *throw-on-error* true)
 
 (defn connect!
-  ([etcd-server-host] (connect! etcd-server-host 4001 7001))
-  ([etcd-server-host port] (connect! etcd-server-host port 7001))
-  ([etcd-server-host port admin-port]
-     [(reset! endpoint (format "http://%s:%s" etcd-server-host port))
-      (reset! admin-endpoint (format "http://%s:%s" etcd-server-host admin-port))]))
+  ([etcd-server-host] (connect! etcd-server-host 2379))
+  ([etcd-server-host port]
+     [(reset! endpoint (format "http://%s:%s" etcd-server-host port))]))
 
 (defn api-get-in
   [response ks]
@@ -42,7 +34,7 @@
 (defn version
   "Gets the etcd server version"
   []
-  (:body (http/get (str @endpoint "/version"))))
+    (get-json http/get (str @endpoint "/version")))
 
 (defn set
   "Sets a vaue to key, optional param :ttl"
@@ -129,12 +121,7 @@
   []
   (get-json http/get (base-url) "/stats/store"))
 
-(defn machines
+(defn members
   "Machines"
   []
-  (get-json http/get (admin-base-url) "/admin/machines"))
-
-(defn config
-  "Gets the config"
-  []
-  (get-json http/get (admin-base-url) "/admin/config"))
+  (get-json http/get (base-url) "/members"))
