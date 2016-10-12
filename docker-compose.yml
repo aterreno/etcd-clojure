@@ -1,0 +1,71 @@
+version: '2'
+services:
+  ambassador:
+    image: cpuguy83/docker-grand-ambassador
+    volumes:
+      - /var/run/docker.sock:/docker.sock
+    command:
+      - -name=vault_etcd0_1
+      - -wait=true
+      - -sock=/docker.sock
+      - -log-level=debug
+
+  etcd0:
+    image: quay.io/coreos/etcd:v3.0.12
+    links:
+      - ambassador:etcd1
+      - ambassador:etcd2
+    ports:
+      - 4001:4001
+      - 2380:2380
+      - 2379:2379
+    command:
+      etcd
+      -name etcd0
+      -initial-cluster-token etcd-cluster-1
+      -initial-cluster "etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380"
+      -initial-cluster-state new
+      -initial-advertise-peer-urls http://etcd0:2380
+      -listen-client-urls "http://0.0.0.0:2379,http://0.0.0.0:4001"
+      -listen-peer-urls http://0.0.0.0:2380
+      -advertise-client-urls http://etcd0:2379
+
+  etcd1:
+    image: quay.io/coreos/etcd:v3.0.12
+    links:
+      - ambassador:etcd0
+      - ambassador:etcd2
+    ports:
+      - 4001
+      - 2380
+      - 2379
+    command:
+      etcd
+      -name etcd1
+      -initial-cluster-token etcd-cluster-1
+      -initial-cluster "etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380"
+      -initial-cluster-state new
+      -initial-advertise-peer-urls http://etcd1:2380
+      -listen-client-urls http://0.0.0.0:2379
+      -listen-peer-urls http://0.0.0.0:2380
+      -advertise-client-urls http://etcd1:2379
+
+  etcd2:
+    image: quay.io/coreos/etcd:v3.0.12
+    links:
+      - ambassador:etcd0
+      - ambassador:etcd1
+    ports:
+      - 4001
+      - 2380
+      - 2379
+    command:
+      etcd
+      -name=etcd2
+      -initial-cluster-token etcd-cluster-1
+      -initial-cluster "etcd0=http://etcd0:2380,etcd1=http://etcd1:2380,etcd2=http://etcd2:2380"
+      -initial-cluster-state new
+      -initial-advertise-peer-urls http://etcd2:2380
+      -listen-client-urls "http://0.0.0.0:2379,http://0.0.0.0:4001"
+      -listen-peer-urls http://0.0.0.0:2380
+      -advertise-client-urls http://etcd2:2379
