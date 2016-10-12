@@ -100,10 +100,7 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 	(store-stats)
 
 ###List machines in the cluster
-	(machines)
-
-###Configuration
-	(config)
+	(members)
 
 ## TODO
 
