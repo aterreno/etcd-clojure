@@ -23,31 +23,31 @@ The default server endpoint is http://127.0.0.1 running on port 4001, however yo
 
 	(connect! "196.0.0.1" 4001 7001)
 
-##Getting the etcd version
+## Getting the etcd version
 	(version)
 
-##Key Space Operations
-###Setting the value of a key, with optional time to live
+## Key Space Operations
+### Setting the value of a key, with optional time to live
 
 	(set "key" "value")
 
 	(set "key" "value" :ttl 5)
 
-###Get the value of a key
+### Get the value of a key
 
 	(get "key")
 
-###Waiting for a change
+### Waiting for a change
 
 	(defn callback[arg] (println (str "Key change: " arg)))
 
 	(get "key" :wait true :callback callback)
 
-###Changing the value of a key
+### Changing the value of a key
 
 	(set "key" "someothervalue")
 
-###Deleting a key
+### Deleting a key
 
 	(delete "key")
 
@@ -55,11 +55,11 @@ Where callback can be for example:
 
 	(defn callback[arg] (println arg))
 
-###Atomically Creating In-Order Keys
+### Atomically Creating In-Order Keys
 
 	(create-in-order "key"
 
-###Atomic Compare-and-Swap
+### Atomic Compare-and-Swap
 
 This reflects the example on the [etcd api page](https://github.com/coreos/etcd/blob/master/Documentation/api.md)
 
@@ -67,7 +67,7 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 	(set "foo" "three" :prev-exist false)
 	(set "foo" "two" :prev-value "one")
 
-###Atomic Compare-and-Delete
+### Atomic Compare-and-Delete
 
 This reflects the example on the [etcd api page](https://github.com/coreos/etcd/blob/master/Documentation/api.md)
 
@@ -75,31 +75,31 @@ This reflects the example on the [etcd api page](https://github.com/coreos/etcd/
 	(delete "foo" :prev-value "two")
 	(delete "foo" :prev-index 1)
 
-###Listing a directory
+### Listing a directory
 	(list "/directory")
 
-###Listing a directory in order
+### Listing a directory in order
 	(list-in-order "/directory")
 
-###Creating a directory
+### Creating a directory
 	(create-dir "/directory")
 
-###Deleting a directory
+### Deleting a directory
 	(delete-dir "/directory")
 
-###Deleting a value:
+### Deleting a value:
 	(delete "key")
 
-###Leader Stats
+### Leader Stats
 	(stats)
 
-###Self Stats
+### Self Stats
 	(self-stats)
 
-###Store Stats
+### Store Stats
 	(store-stats)
 
-###List machines in the cluster
+### List machines in the cluster
 	(members)
 
 ## TODO
