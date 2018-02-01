@@ -6,6 +6,6 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :scm {:url "git@github.com:aterreno/etcd-clojure.git"}
   :main etcd-clojure.core
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [cheshire "5.4.0"]
-                 [clj-http "1.0.1"]])
+  :dependencies [[org.clojure/clojure "1.9.0"]
+                 [cheshire "5.8.0"]
+                 [clj-http "3.7.0"]])
